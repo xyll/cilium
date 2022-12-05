@@ -532,7 +532,7 @@ spec:
         - sh
         - -c
         - |
-          until test -s {{ (print "/tmp/cilium-bootstrap.d/" (.Values.nodeinit.bootstrapFile | base)) | quote }}; do
+          until test -s {{ (print "/tmp/cilium-bootstrap.d/" (.Values.nodeinit.bootstrapFile | base)) | quote }} || test -s "/tmp/cilium-bootstrap-time; do
             echo "Waiting on node-init to run...";
             sleep 1;
           done
