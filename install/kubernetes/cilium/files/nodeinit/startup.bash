@@ -114,6 +114,11 @@ if version_gte "${K8S_VERSION#"Kubernetes "}" "v1.24"; then
 else
   exec /home/kubernetes/bin/the-kubelet "${@}" --network-plugin=cni --cni-bin-dir={{ .Values.cni.binPath }}
 fi
+{{- if not (eq .Values.nodeinit.bootstrapFile "") }}
+mkdir -p {{ .Values.nodeinit.bootstrapFile | dir | quote }}
+date > {{ .Values.nodeinit.bootstrapFile | quote }}
+date > "/tmp/cilium-bootstrap-time"
+{{- end }}
 EOF
   else
     echo "Kubelet wrapper already exists, skipping..."
@@ -156,6 +161,7 @@ iptables -w -t nat -D POSTROUTING -m comment --comment "ip-masq: ensure nat POST
 {{- if not (eq .Values.nodeinit.bootstrapFile "") }}
 mkdir -p {{ .Values.nodeinit.bootstrapFile | dir | quote }}
 date > {{ .Values.nodeinit.bootstrapFile | quote }}
+date > "/tmp/cilium-bootstrap-time"
 {{- end }}
 
 {{- if .Values.azure.enabled }}
